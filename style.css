@@ -1,6 +1,9 @@
 body {
   margin: 0;
-  font-family: Arial;
+  padding: 0;
+  height: 100vh;
+  background-image: radial-gradient( circle 1292px at -13.6% 51.7%,  rgba(0,56,68,1) 0%, rgba(163,217,185,1) 51.5%, rgba(255,252,247,1) 88.6% );
+  font-family: Arial, sans-serif;
 }
 
 .topnav {
@@ -18,7 +21,7 @@ body {
   font-size: 17px;
 }
 
-p {
+.logo {
   float: left;
   display: block;
   color: #f2f2f2;
@@ -124,17 +127,50 @@ p {
 
 .container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.container-button {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .button {
-  width: 70px;
+  width: 100px;
   height: 50px;
   margin: 5px;
+  background: linear-gradient(45deg, #4caf50, #388e3c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  background: linear-gradient(45deg, #388e3c, #4caf50);
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .judul {
   margin: 20px;
   font-size: 100px;
+}
+
+.sub-judul {
+  margin: 20px;
+  font-size: 30px;
+}
+
+.desc {
+  margin: 20px;
+  font-size: 15px;
 }
