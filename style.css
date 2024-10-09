@@ -2,8 +2,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  background-image: radial-gradient( circle 1292px at -13.6% 51.7%,  rgba(0,56,68,1) 0%, rgba(163,217,185,1) 51.5%, rgba(255,252,247,1) 88.6% );
-  font-family: Arial, sans-serif;
+  background-image: linear-gradient(to right, #d7d2cc 0%, #304352 100%);
+  font-family: 'Raleway', Arial, sans-serif;
 }
 
 .topnav {
@@ -18,18 +18,21 @@ body {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .logo {
   float: left;
-  display: block;
+  display: flex;
   color: #f2f2f2;
   text-align: center;
-  font-size: 17px;
+  padding: 7px 8px;
+  font-size: 30px;
   margin: 0;
-  padding: 14px 16px;
+  padding-left: 25px;
+  font-weight: bolder;
 }
+
 .menu {
   float: right;
 }
@@ -44,7 +47,7 @@ body {
 }
 
 .dropdown .dropbtn {
-  font-size: 17px;
+  font-size: 20px;
   border: none;
   outline: none;
   color: white;
@@ -138,36 +141,36 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 50px;
+  
 }
 
 .button {
-  width: 100px;
-  height: 50px;
+  width: 120px;
+  height: 60px;
   margin: 5px;
-  background: linear-gradient(45deg, #4caf50, #388e3c);
+  background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #1C1C1C 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+  background-blend-mode: multiply;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .button:hover {
-  background: linear-gradient(45deg, #388e3c, #4caf50);
+  background: linear-gradient(to bottom, #D5DEE7 0%, #E8EBF2 50%, #E2E7ED 100%), linear-gradient(to bottom, rgba(0,0,0,0.02) 50%, rgba(255,255,255,0.02) 61%, rgba(0,0,0,0.02) 73%), linear-gradient(33deg, rgba(255,255,255,0.20) 0%, rgba(0,0,0,0.20) 100%);
+  background-blend-mode: normal,color-burn;
+  color: #1C1C1C;
   transform: scale(1.05);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 .judul {
   margin: 20px;
-  font-size: 100px;
-}
-
-.sub-judul {
-  margin: 20px;
-  font-size: 30px;
+  font-size: 60px;
 }
 
 .desc {
