@@ -1,3 +1,16 @@
+function generateCriteriaTypes() {
+    const criteriaCount = parseInt(document.getElementById("criteria").value);
+    let criteriaTypesHTML = '';
+
+    for (let i = 1; i <= criteriaCount; i++) {
+        criteriaTypesHTML += `
+            <label for="type${i}">Criteria ${i} is a cost:</label>
+            <input type="checkbox" id="type${i}" name="type${i}"><br>
+        `;
+    }
+    document.getElementById("criteriaTypes").innerHTML = criteriaTypesHTML;
+}
+
 function generateTable() {
     const criteria = parseInt(document.getElementById("criteria").value);
     const alternatives = parseInt(document.getElementById("alternatives").value);
@@ -24,7 +37,11 @@ function calculateSAW() {
     const criteria = parseInt(document.getElementById("criteria").value);
     const alternatives = parseInt(document.getElementById("alternatives").value);
     const weights = document.getElementById("weights").value.split(',').map(Number);
-    const types = document.getElementById("types").value.split(',').map(type => type.trim());
+
+    let types = [];
+    for (let i = 1; i <= criteria; i++) {
+        types.push(document.getElementById(`type${i}`).checked ? "cost" : "benefit");
+    }
 
     let matrix = [];
     for (let j = 1; j <= alternatives; j++) {
@@ -40,10 +57,10 @@ function calculateSAW() {
         let column = matrix.map(row => row[i]);
         let normalizedColumn;
 
-        if (types[i].toLowerCase() === "benefit") {
+        if (types[i] === "benefit") {
             let max = Math.max(...column);
             normalizedColumn = column.map(val => val / max);
-        } else if (types[i].toLowerCase() === "cost") {
+        } else {
             let min = Math.min(...column);
             normalizedColumn = column.map(val => min / val);
         }
