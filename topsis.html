@@ -52,7 +52,7 @@
   <label for="types">Criteria Types (Benefit/Cost):</label>
   <input type="text" id="types" name="types" placeholder="e.g. Benefit, Cost, Benefit"><br><br>
 
-  <button type="button" onclick="generateTopsisTable()">Generate Table</button>
+  <button type="button" onclick="generateTable()">Generate Table</button>
 </form>
 
 <div id="inputTable"></div>
@@ -60,5 +60,15 @@
 <div id="result"></div>
 
 <script src="topsis.js"></script>
+    <script>
+        function myFunction() {
+          var x = document.getElementById("myTopnav");
+          if (x.className === "topnav") {
+            x.className += " responsive";
+          } else {
+            x.className = "topnav";
+          }
+        }
+      </script>
 </body>
 </html>

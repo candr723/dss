@@ -1,97 +1,90 @@
-function generateTopsisTable() {
-    const criteria = document.getElementById("criteria").value;
-    const alternatives = document.getElementById("alternatives").value;
-    const weights = document.getElementById("weights").value.split(",").map(Number);
-    const types = document.getElementById("types").value.split(",");
-
-    let inputTable = "<h3>Input Table</h3>";
-    inputTable += "<table border='1'><tr><th>Alternative</th>";
-
-    // Generate table headers for criteria
-    for (let i = 0; i < criteria; i++) {
-        inputTable += `<th>Criterion ${i+1}</th>`;
+function generateTable() {
+    const criteria = parseInt(document.getElementById("criteria").value);
+    const alternatives = parseInt(document.getElementById("alternatives").value);
+    let tableHTML = '<table><tr><th>Alternatives</th>';
+    for (let i = 1; i <= criteria; i++) {
+        tableHTML += `<th>Criteria ${i}</th>`;
     }
-    inputTable += "</tr>";
-
-    // Generate input rows for each alternative
-    for (let i = 0; i < alternatives; i++) {
-        inputTable += `<tr><td>Alternative ${i+1}</td>`;
-        for (let j = 0; j < criteria; j++) {
-            inputTable += `<td><input type="number" id="alt${i}crit${j}" value="0"></td>`;
+    tableHTML += '</tr>';
+    for (let j = 1; j <= alternatives; j++) {
+        tableHTML += `<tr><td>Alternative ${j}</td>`;
+        for (let k = 1; k <= criteria; k++) {
+            tableHTML += `<td><input type="number" id="a${j}c${k}" min="0" max="100"></td>`;
         }
-        inputTable += "</tr>";
+        tableHTML += '</tr>';
     }
-    inputTable += "</table>";
-    inputTable += `<button type="button" onclick="calculateTopsis(${criteria}, ${alternatives}, ${JSON.stringify(weights)}, ${JSON.stringify(types)})">Calculate TOPSIS</button>`;
-    
-    document.getElementById("inputTable").innerHTML = inputTable;
+    tableHTML += '</table><br><button onclick="calculateTOPSIS()">Calculate TOPSIS</button>';
+    document.getElementById("inputTable").innerHTML = tableHTML;
 }
 
-function calculateTopsis(criteria, alternatives, weights, types) {
-    weights = JSON.parse(weights);
-    types = JSON.parse(types);
-    
+function calculateTOPSIS() {
+    const criteria = parseInt(document.getElementById("criteria").value);
+    const alternatives = parseInt(document.getElementById("alternatives").value);
+    const weights = document.getElementById("weights").value.split(',').map(Number);
+    const types = document.getElementById("types").value.split(',').map(type => type.trim());
+
+    // Step 1: Build decision matrix
     let matrix = [];
+    for (let j = 1; j <= alternatives; j++) {
+        let row = [];
+        for (let k = 1; k <= criteria; k++) {
+            row.push(parseFloat(document.getElementById(`a${j}c${k}`).value));
+        }
+        matrix.push(row);
+    }
 
-    // Collect input values into matrix
-    for (let i = 0; i < alternatives; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < criteria; j++) {
-            matrix[i][j] = parseFloat(document.getElementById(`alt${i}crit${j}`).value);
+    // Step 2: Normalize decision matrix
+    let normalizedMatrix = [];
+    for (let i = 0; i < criteria; i++) {
+        let column = matrix.map(row => row[i]);
+        let sumSquare = column.reduce((sum, val) => sum + val * val, 0);
+        let normalizedColumn = column.map(val => val / Math.sqrt(sumSquare));
+        normalizedMatrix.push(normalizedColumn);
+    }
+
+    // Step 3: Weighted normalized decision matrix
+    let weightedMatrix = normalizedMatrix.map((col, i) => col.map(val => val * weights[i]));
+
+    // Step 4: Determine ideal and negative-ideal solutions
+    let idealPositive = [];
+    let idealNegative = [];
+    for (let i = 0; i < criteria; i++) {
+        if (types[i].toLowerCase() === "benefit") {
+            idealPositive.push(Math.max(...weightedMatrix[i]));
+            idealNegative.push(Math.min(...weightedMatrix[i]));
+        } else if (types[i].toLowerCase() === "cost") {
+            idealPositive.push(Math.min(...weightedMatrix[i]));
+            idealNegative.push(Math.max(...weightedMatrix[i]));
         }
     }
 
-    console.log("Matrix:", matrix); // Debugging
-
-    // Step 1: Normalize the decision matrix
-    let normMatrix = normalizeMatrix(matrix, criteria, alternatives);
-    console.log("Normalized Matrix:", normMatrix); // Debugging
-
-    // Step 2: Weight the normalized matrix
-    let weightedMatrix = weightMatrix(normMatrix, weights, criteria, alternatives);
-    console.log("Weighted Matrix:", weightedMatrix); // Debugging
-
-    // Step 3: Determine ideal best and worst values
-    let idealBest = [], idealWorst = [];
-    for (let j = 0; j < criteria; j++) {
-        if (types[j].trim().toLowerCase() === "benefit") {
-            idealBest[j] = Math.max(...weightedMatrix.map(row => row[j]));
-            idealWorst[j] = Math.min(...weightedMatrix.map(row => row[j]));
-        } else {
-            idealBest[j] = Math.min(...weightedMatrix.map(row => row[j]));
-            idealWorst[j] = Math.max(...weightedMatrix.map(row => row[j]));
+    // Step 5: Calculate distance to ideal and negative-ideal solutions
+    let distancesPositive = [];
+    let distancesNegative = [];
+    for (let j = 0; j < alternatives; j++) {
+        let distancePositive = 0;
+        let distanceNegative = 0;
+        for (let k = 0; k < criteria; k++) {
+            distancePositive += Math.pow(weightedMatrix[k][j] - idealPositive[k], 2);
+            distanceNegative += Math.pow(weightedMatrix[k][j] - idealNegative[k], 2);
         }
+        distancesPositive.push(Math.sqrt(distancePositive));
+        distancesNegative.push(Math.sqrt(distanceNegative));
     }
-    console.log("Ideal Best:", idealBest); // Debugging
-    console.log("Ideal Worst:", idealWorst); // Debugging
 
-    // Step 4: Calculate the separation measures
-    let separationBest = [], separationWorst = [];
-    for (let i = 0; i < alternatives; i++) {
-        separationBest[i] = Math.sqrt(weightedMatrix[i].reduce((sum, val, j) => sum + Math.pow(val - idealBest[j], 2), 0));
-        separationWorst[i] = Math.sqrt(weightedMatrix[i].reduce((sum, val, j) => sum + Math.pow(val - idealWorst[j], 2), 0));
+    // Step 6: Calculate preference scores
+    let results = [];
+    for (let j = 0; j < alternatives; j++) {
+        let score = distancesNegative[j] / (distancesPositive[j] + distancesNegative[j]);
+        results.push({ alternative: j + 1, score: score });
     }
-    console.log("Separation from Ideal Best:", separationBest); // Debugging
-    console.log("Separation from Ideal Worst:", separationWorst); // Debugging
 
-    // Step 5: Calculate the relative closeness to the ideal solution
-    let closeness = separationWorst.map((dMinus, i) => dMinus / (dMinus + separationBest[i]));
-    console.log("Closeness:", closeness); // Debugging
-
-    // Step 6: Output the result
-    let result = "<h3>TOPSIS Result</h3>";
-    for (let i = 0; i < alternatives; i++) {
-        result += `<p>Alternative ${i+1}: Closeness to Ideal Solution = ${closeness[i].toFixed(4)}</p>`;
-    }
-    
-    document.getElementById("result").innerHTML = result;
+    // Step 7: Rank alternatives based on scores
+    results.sort((a, b) => b.score - a.score);
+    let resultHTML = '<h3>Results</h3><table><tr><th>Alternative</th><th>Score</th></tr>';
+    results.forEach(res => {
+        resultHTML += `<tr><td>Alternative ${res.alternative}</td><td>${res.score.toFixed(2)}</td></tr>`;
+    });
+    resultHTML += '</table>';
+    document.getElementById("result").innerHTML = resultHTML;
 }
-
-    function myFunction() {
-        var x = document.getElementById("myTopnav");
-        if (x.className === "topnav") {
-        x.className += " responsive";
-        } else {
-        x.className = "topnav";
-        }
-    }
