@@ -1,78 +1,88 @@
 function generateWPTable() {
-    const criteria = document.getElementById('criteria').value;
-    const alternatives = document.getElementById('alternatives').value;
-    const weights = document.getElementById('weights').value.split(',').map(Number);
-    const types = document.getElementById('types').value.split(',').map(type => type.trim());
+  const criteria = parseInt(document.getElementById('criteria').value);
+  const alternatives = parseInt(document.getElementById('alternatives').value);
   
-    let tableHtml = '<table border="1"><tr><th>Alternatives</th>';
-    
-    // Generate table headers for criteria
-    for (let i = 1; i <= criteria; i++) {
-      tableHtml += `<th>Criterion ${i}</th>`;
-    }
-    tableHtml += '</tr>';
-  
-    // Generate table rows for alternatives
-    for (let i = 1; i <= alternatives; i++) {
-      tableHtml += `<tr><td>Alternative ${i}</td>`;
-      for (let j = 1; j <= criteria; j++) {
-        tableHtml += `<td><input type="number" id="a${i}c${j}" value="0" step="0.01"></td>`;
-      }
-      tableHtml += '</tr>';
-    }
-  
-    tableHtml += '</table><br><button type="button" onclick="calculateWP()">Calculate WP</button>';
-    document.getElementById('inputTable').innerHTML = tableHtml;
+  let tableHTML = '<table border="1"><tr><th>Alternatives</th>';
+
+  // Generate table headers for criteria, including weights and types (Cost/Benefit)
+  for (let i = 1; i <= criteria; i++) {
+      tableHTML += `
+          <th>
+              Criteria ${i}<br>
+              Weight: <input type="number" id="weight${i}" min="0" max="1" step="0.01" value="0.3"><br>
+              <input type="checkbox" id="c${i}type"> Cost
+          </th>`;
   }
+  tableHTML += '</tr>';
+
+  // Generate table rows for alternatives with name input
+  for (let j = 1; j <= alternatives; j++) {
+      tableHTML += `<tr><td><input type="text" id="alt${j}" value="Alternative ${j}"></td>`;
+      for (let k = 1; k <= criteria; k++) {
+          tableHTML += `<td><input type="number" id="a${j}c${k}" min="0" step="0.01" value="0"></td>`;
+      }
+      tableHTML += '</tr>';
+  }
+  tableHTML += '</table><br><button type="button" onclick="calculateWP()">Calculate WP</button>';
+  document.getElementById('inputTable').innerHTML = tableHTML;
+}
+
+function calculateWP() {
+  const criteria = parseInt(document.getElementById('criteria').value);
+  const alternatives = parseInt(document.getElementById('alternatives').value);
   
-  function calculateWP() {
-    const criteria = document.getElementById('criteria').value;
-    const alternatives = document.getElementById('alternatives').value;
-    const weights = document.getElementById('weights').value.split(',').map(Number);
-    const types = document.getElementById('types').value.split(',').map(type => type.trim());
-  
-    let results = [];
-  
-    // Loop through each alternative
-    for (let i = 1; i <= alternatives; i++) {
+  let weights = [];
+  let types = [];
+  let totalWeight = 0;
+
+  // Ambil bobot dan jenis kriteria (Cost/Benefit)
+  for (let i = 1; i <= criteria; i++) {
+      let weight = parseFloat(document.getElementById(`weight${i}`).value);
+      totalWeight += weight;
+      weights.push(weight);
+      types.push(document.getElementById(`c${i}type`).checked ? "Cost" : "Benefit");
+  }
+
+  // Normalisasi bobot agar jumlah bobot = 1
+  weights = weights.map(weight => weight / totalWeight);
+
+  let results = [];
+
+  // Loop through each alternative
+  for (let j = 1; j <= alternatives; j++) {
       let product = 1;
-  
-      // Loop through each criterion
-      for (let j = 1; j <= criteria; j++) {
-        const value = parseFloat(document.getElementById(`a${i}c${j}`).value);
-  
-        // Adjust value based on Benefit/Cost
-        let adjustedValue = types[j - 1] === 'Cost' ? 1 / value : value;
-  
-        // Multiply the weighted value
-        product *= Math.pow(adjustedValue, weights[j - 1]);
+      for (let k = 1; k <= criteria; k++) {
+          const value = parseFloat(document.getElementById(`a${j}c${k}`).value);
+          
+          // Adjust value based on Benefit/Cost
+          let adjustedValue = types[k - 1] === 'Cost' ? 1 / value : value;
+          
+          // Multiply the weighted value (normalized weight)
+          product *= Math.pow(adjustedValue, weights[k - 1]);
       }
-  
-      // Push the final product (S vector) for this alternative
-      results.push({ alternative: i, score: product });
-    }
-  
-    // Calculate total sum of all products (S vector sum)
-    const totalS = results.reduce((sum, result) => sum + result.score, 0);
-  
-    // Normalize each alternative score by dividing with the total S
-    results = results.map(result => {
-      return {
-        alternative: result.alternative,
-        score: result.score / totalS
-      };
-    });
-  
-    // Sort results based on normalized score
-    results.sort((a, b) => b.score - a.score);
-  
-    // Display results
-    let resultHtml = '<h3>Results</h3><table border="1"><tr><th>Alternative</th><th>Normalized Score</th></tr>';
-    results.forEach(result => {
-      resultHtml += `<tr><td>Alternative ${result.alternative}</td><td>${result.score.toFixed(4)}</td></tr>`;
-    });
-    resultHtml += '</table>';
-  
-    document.getElementById('result').innerHTML = resultHtml;
+      results.push({ alternative: document.getElementById(`alt${j}`).value, score: product });
   }
-  
+
+  // Calculate total sum of all products (S vector sum)
+  const totalS = results.reduce((sum, result) => sum + result.score, 0);
+
+  // Normalize each alternative score by dividing with the total S
+  results = results.map(result => {
+      return {
+          alternative: result.alternative,
+          score: result.score / totalS
+      };
+  });
+
+  // Sort results based on normalized score
+  results.sort((a, b) => b.score - a.score);
+
+  // Display results
+  let resultHTML = '<h3>Results</h3><table border="1"><tr><th>Alternative</th><th>Normalized Score</th></tr>';
+  results.forEach(result => {
+      resultHTML += `<tr><td>${result.alternative}</td><td>${result.score.toFixed(4)}</td></tr>`;
+  });
+  resultHTML += '</table>';
+
+  document.getElementById('result').innerHTML = resultHTML;
+}

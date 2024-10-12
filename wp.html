@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weighted Product (WP) Calculator</title>
+    <title>Weighted Product</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -40,19 +40,13 @@
 <h1>Weighted Product (WP) Calculator</h1>
 
 <form id="wpForm">
-  <label for="criteria">Number of Criteria:</label>
-  <input type="number" id="criteria" name="criteria" min="1" value="3"><br><br>
-
-  <label for="alternatives">Number of Alternatives:</label>
-  <input type="number" id="alternatives" name="alternatives" min="1" value="3"><br><br>
-
-  <label for="weights">Weights for Criteria (Comma-separated):</label>
-  <input type="text" id="weights" name="weights" placeholder="e.g. 0.3, 0.4, 0.3"><br><br>
-
-  <label for="types">Criteria Types (Benefit/Cost):</label>
-  <input type="text" id="types" name="types" placeholder="e.g. Benefit, Cost, Benefit"><br><br>
-
-  <button type="button" onclick="generateWPTable()">Generate Table</button>
+    <label for="criteria">Number of Criteria:</label>
+    <input type="number" id="criteria" name="criteria" min="1" value="3"><br><br>
+  
+    <label for="alternatives">Number of Alternatives:</label>
+    <input type="number" id="alternatives" name="alternatives" min="1" value="3"><br><br>
+  
+    <button class="form-button" type="button" onclick="generateWPTable()">Generate Table</button>
 </form>
 
 <div id="inputTable"></div>
@@ -60,15 +54,15 @@
 <div id="result"></div>
 
 <script src="wp.js"></script>
-    <script>
-        function myFunction() {
-          var x = document.getElementById("myTopnav");
-          if (x.className === "topnav") {
-            x.className += " responsive";
-          } else {
-            x.className = "topnav";
-          }
-        }
-      </script>
+<script>
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+</script>
 </body>
 </html>

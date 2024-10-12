@@ -2,88 +2,110 @@ function generateTable() {
     const criteria = parseInt(document.getElementById("criteria").value);
     const alternatives = parseInt(document.getElementById("alternatives").value);
     let tableHTML = '<table><tr><th>Alternatives</th>';
+    
+    // Tambahkan kolom untuk bobot dan kriteria, serta checkbox Cost/Benefit
     for (let i = 1; i <= criteria; i++) {
-        tableHTML += `<th>Criteria ${i}</th>`;
+        tableHTML += `<th>Criteria ${i} <br>Weight: <input type="number" id="weight${i}" min="0" max="1" step="0.01" value="0.3"> <br><input type="checkbox" id="c${i}type"> Cost</th>`;
     }
     tableHTML += '</tr>';
+    
+    // Tambahkan input untuk nama alternatif dan nilai kriteria
     for (let j = 1; j <= alternatives; j++) {
-        tableHTML += `<tr><td>Alternative ${j}</td>`;
+        tableHTML += `<tr><td><input type="text" id="alt${j}" value="Alternative ${j}"></td>`;
         for (let k = 1; k <= criteria; k++) {
             tableHTML += `<td><input type="number" id="a${j}c${k}" min="0" max="100"></td>`;
         }
         tableHTML += '</tr>';
     }
-    tableHTML += '</table><br><button onclick="calculateTOPSIS()">Calculate TOPSIS</button>';
+    tableHTML += '</table><br><button class="form-button" onclick="calculateTOPSIS()">Calculate TOPSIS</button>';
     document.getElementById("inputTable").innerHTML = tableHTML;
 }
 
 function calculateTOPSIS() {
     const criteria = parseInt(document.getElementById("criteria").value);
     const alternatives = parseInt(document.getElementById("alternatives").value);
-    const weights = document.getElementById("weights").value.split(',').map(Number);
-    const types = document.getElementById("types").value.split(',').map(type => type.trim());
+    
+    // Ambil bobot per kriteria
+    let weights = [];
+    for (let i = 1; i <= criteria; i++) {
+        weights.push(parseFloat(document.getElementById(`weight${i}`).value));
+    }
 
-    // Step 1: Build decision matrix
+    // Cek jenis kriteria (Cost atau Benefit) dari checkbox
+    let types = [];
+    for (let i = 1; i <= criteria; i++) {
+        const isCost = document.getElementById(`c${i}type`).checked;
+        types.push(isCost ? "Cost" : "Benefit");
+    }
+    
+    // Ambil data alternatif dan nilai kriteria
     let matrix = [];
+    let alternativeNames = [];
     for (let j = 1; j <= alternatives; j++) {
         let row = [];
+        alternativeNames.push(document.getElementById(`alt${j}`).value); // Ambil nama alternatif
         for (let k = 1; k <= criteria; k++) {
             row.push(parseFloat(document.getElementById(`a${j}c${k}`).value));
         }
         matrix.push(row);
     }
-
-    // Step 2: Normalize decision matrix
+    
+    // Langkah 1: Normalisasi matriks
     let normalizedMatrix = [];
     for (let i = 0; i < criteria; i++) {
         let column = matrix.map(row => row[i]);
-        let sumSquare = column.reduce((sum, val) => sum + val * val, 0);
-        let normalizedColumn = column.map(val => val / Math.sqrt(sumSquare));
+        let sumOfSquares = Math.sqrt(column.reduce((sum, val) => sum + val * val, 0));
+        let normalizedColumn = column.map(val => val / sumOfSquares);
         normalizedMatrix.push(normalizedColumn);
     }
-
-    // Step 3: Weighted normalized decision matrix
-    let weightedMatrix = normalizedMatrix.map((col, i) => col.map(val => val * weights[i]));
-
-    // Step 4: Determine ideal and negative-ideal solutions
+    
+    // Langkah 2: Normalisasi terbobot (Weighted normalized matrix)
+    let weightedMatrix = [];
+    for (let i = 0; i < criteria; i++) {
+        weightedMatrix.push(normalizedMatrix[i].map(val => val * weights[i]));
+    }
+    
+    // Langkah 3: Tentukan solusi ideal positif (A+) dan negatif (A-)
     let idealPositive = [];
     let idealNegative = [];
     for (let i = 0; i < criteria; i++) {
         if (types[i].toLowerCase() === "benefit") {
             idealPositive.push(Math.max(...weightedMatrix[i]));
             idealNegative.push(Math.min(...weightedMatrix[i]));
-        } else if (types[i].toLowerCase() === "cost") {
+        } else {
             idealPositive.push(Math.min(...weightedMatrix[i]));
             idealNegative.push(Math.max(...weightedMatrix[i]));
         }
     }
 
-    // Step 5: Calculate distance to ideal and negative-ideal solutions
+    // Langkah 4: Hitung jarak ke solusi ideal positif (D+) dan negatif (D-)
     let distancesPositive = [];
     let distancesNegative = [];
     for (let j = 0; j < alternatives; j++) {
-        let distancePositive = 0;
-        let distanceNegative = 0;
+        let dPositive = 0;
+        let dNegative = 0;
         for (let k = 0; k < criteria; k++) {
-            distancePositive += Math.pow(weightedMatrix[k][j] - idealPositive[k], 2);
-            distanceNegative += Math.pow(weightedMatrix[k][j] - idealNegative[k], 2);
+            dPositive += Math.pow(weightedMatrix[k][j] - idealPositive[k], 2);
+            dNegative += Math.pow(weightedMatrix[k][j] - idealNegative[k], 2);
         }
-        distancesPositive.push(Math.sqrt(distancePositive));
-        distancesNegative.push(Math.sqrt(distanceNegative));
+        distancesPositive.push(Math.sqrt(dPositive));
+        distancesNegative.push(Math.sqrt(dNegative));
     }
-
-    // Step 6: Calculate preference scores
-    let results = [];
+    
+    // Langkah 5: Hitung nilai preferensi untuk setiap alternatif
+    let preferenceValues = [];
     for (let j = 0; j < alternatives; j++) {
-        let score = distancesNegative[j] / (distancesPositive[j] + distancesNegative[j]);
-        results.push({ alternative: j + 1, score: score });
+        preferenceValues.push({
+            alternative: alternativeNames[j],
+            score: distancesNegative[j] / (distancesPositive[j] + distancesNegative[j])
+        });
     }
 
-    // Step 7: Rank alternatives based on scores
-    results.sort((a, b) => b.score - a.score);
+    // Urutkan hasil berdasarkan skor tertinggi
+    preferenceValues.sort((a, b) => b.score - a.score);
     let resultHTML = '<h3>Results</h3><table><tr><th>Alternative</th><th>Score</th></tr>';
-    results.forEach(res => {
-        resultHTML += `<tr><td>Alternative ${res.alternative}</td><td>${res.score.toFixed(2)}</td></tr>`;
+    preferenceValues.forEach(res => {
+        resultHTML += `<tr><td>${res.alternative}</td><td>${res.score.toFixed(2)}</td></tr>`;
     });
     resultHTML += '</table>';
     document.getElementById("result").innerHTML = resultHTML;
