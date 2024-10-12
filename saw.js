@@ -1,69 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Additive Weighting</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-    <div class="topnav" id="myTopnav">
-        <p class="logo">Novice</p>
-        <div class="menu">
-            <a href="index.html">Home</a>
-            <div class="dropdown">
-              <button class="dropbtn">
-                Methods
-                <i class="fa fa-caret-down"></i>
-              </button>
-              <div class="dropdown-content">
-                  <a href="saw.html">SAW</a>
-                  <a href="wp.html">WP</a>
-                  <a href="topsis.html">TOPSIS</a>
-                  <a href="ahp.html">AHP</a>
-              </div>
-            </div>
-            <a href="#about">About</a>
-            <a
-              href="javascript:void(0);"
-              style="font-size: 15px"
-              class="icon"
-              onclick="myFunction()"
-              >&#9776;
-            </a>
-        </div>
-    </div>
-<h1>Simple Additive Weighting (SAW) Calculator</h1>
-
-<form id="sawForm">
-    <label for="criteria">Number of Criteria:</label>
-    <input type="number" id="criteria" name="criteria" min="1" value="3"><br><br>
-  
-    <label for="alternatives">Number of Alternatives:</label>
-    <input type="number" id="alternatives" name="alternatives" min="1" value="3"><br><br>
-  
-    <button class="form-button" type="button" onclick="generateTable()">Generate Table</button>
-  </form>
-  
-  <div id="inputTable"></div>
-  
-  <div id="result"></div>
-  
-
-<script src="saw.js"></script>
-    <script>
-        function myFunction() {
-          var x = document.getElementById("myTopnav");
-          if (x.className === "topnav") {
-            x.className += " responsive";
-          } else {
-            x.className = "topnav";
-          }
+function generateTable() {
+    const criteria = parseInt(document.getElementById("criteria").value);
+    const alternatives = parseInt(document.getElementById("alternatives").value);
+    let tableHTML = '<table><tr><th>Alternatives</th>';
+    
+    // Tambahkan kolom untuk bobot dan kriteria, serta checkbox Cost/Benefit
+    for (let i = 1; i <= criteria; i++) {
+        tableHTML += `<th>Criteria ${i} <br>Weight: <input type="number" id="weight${i}" min="0" max="1" step="0.01" value="0.3"> <br><input type="checkbox" id="c${i}type"> Cost</th>`;
+    }
+    tableHTML += '</tr>';
+    
+    // Tambahkan input untuk nama alternatif dan nilai kriteria
+    for (let j = 1; j <= alternatives; j++) {
+        tableHTML += `<tr><td><input type="text" id="alt${j}" value="Alternative ${j}"></td>`;
+        for (let k = 1; k <= criteria; k++) {
+            tableHTML += `<td><input type="number" id="a${j}c${k}" min="0" max="100"></td>`;
         }
-      </script>
-</body>
-</html>
+        tableHTML += '</tr>';
+    }
+    tableHTML += '</table><br><button onclick="calculateSAW()">Calculate SAW</button>';
+    document.getElementById("inputTable").innerHTML = tableHTML;
+}
+
+function calculateSAW() {
+    const criteria = parseInt(document.getElementById("criteria").value);
+    const alternatives = parseInt(document.getElementById("alternatives").value);
+    
+    // Ambil bobot per kriteria
+    let weights = [];
+    for (let i = 1; i <= criteria; i++) {
+        weights.push(parseFloat(document.getElementById(`weight${i}`).value));
+    }
+
+    // Cek jenis kriteria (Cost atau Benefit) dari checkbox
+    let types = [];
+    for (let i = 1; i <= criteria; i++) {
+        const isCost = document.getElementById(`c${i}type`).checked;
+        types.push(isCost ? "Cost" : "Benefit");
+    }
+    
+    // Ambil data alternatif dan nilai kriteria
+    let matrix = [];
+    let alternativeNames = [];
+    for (let j = 1; j <= alternatives; j++) {
+        let row = [];
+        alternativeNames.push(document.getElementById(`alt${j}`).value); // Ambil nama alternatif
+        for (let k = 1; k <= criteria; k++) {
+            row.push(parseFloat(document.getElementById(`a${j}c${k}`).value));
+        }
+        matrix.push(row);
+    }
+    
+    // Normalisasi matriks
+    let normalizedMatrix = [];
+    for (let i = 0; i < criteria; i++) {
+        let column = matrix.map(row => row[i]);
+        let normalizedColumn;
+        if (types[i].toLowerCase() === "benefit") {
+            let max = Math.max(...column);
+            normalizedColumn = column.map(val => val / max);
+        } else if (types[i].toLowerCase() === "cost") {
+            let min = Math.min(...column);
+            normalizedColumn = column.map(val => min / val);
+        }
+        normalizedMatrix.push(normalizedColumn);
+    }
+    
+    // Hitung hasil
+    let results = [];
+    for (let j = 0; j < alternatives; j++) {
+        let sum = 0;
+        for (let k = 0; k < criteria; k++) {
+            sum += normalizedMatrix[k][j] * weights[k];
+        }
+        results.push({ alternative: alternativeNames[j], score: sum });
+    }
+    
+    // Urutkan berdasarkan skor tertinggi
+    results.sort((a, b) => b.score - a.score);
+    let resultHTML = '<h3>Results</h3><table><tr><th>Alternative</th><th>Score</th></tr>';
+    results.forEach(res => {
+        resultHTML += `<tr><td>${res.alternative}</td><td>${res.score.toFixed(2)}</td></tr>`;
+    });
+    resultHTML += '</table>';
+    document.getElementById("result").innerHTML = resultHTML;
+}
