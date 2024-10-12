@@ -4,6 +4,7 @@ body {
   height: 100vh;
   background-image: linear-gradient(to right, #d7d2cc 0%, #304352 100%);
   font-family: 'Raleway', Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .topnav {
@@ -18,7 +19,7 @@ body {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 20px;
+  font-size: 1.25rem; /* Gunakan rem untuk responsivitas */
 }
 
 .logo {
@@ -27,7 +28,7 @@ body {
   color: #f2f2f2;
   text-align: center;
   padding: 7px 8px;
-  font-size: 30px;
+  font-size: 1.875rem; /* Gunakan rem untuk responsivitas */
   margin: 0;
   padding-left: 25px;
   font-weight: bolder;
@@ -47,7 +48,7 @@ body {
 }
 
 .dropdown .dropbtn {
-  font-size: 20px;
+  font-size: 1.25rem; /* Gunakan rem untuk responsivitas */
   border: none;
   outline: none;
   color: white;
@@ -126,6 +127,19 @@ body {
     width: 100%;
     text-align: left;
   }
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
 }
 
 .container {
@@ -137,12 +151,15 @@ body {
   text-align: center;
 }
 
+h1 {
+  font-size: 5vh;
+}
+
 .container-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 50px;
-  
+  gap: 20px; /* Sesuaikan jarak pada button */
 }
 
 .button {
@@ -154,7 +171,7 @@ body {
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 25px;
+  font-size: 1.5625rem; /* Gunakan rem untuk responsivitas */
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -170,18 +187,17 @@ body {
 
 .judul {
   margin: 20px;
-  font-size: 60px;
+  font-size: 3rem; /* Gunakan rem untuk responsivitas */
 }
 
 .desc {
   margin: 20px;
-  font-size: 30px;
+  font-size: 1.875rem; /* Gunakan rem untuk responsivitas */
 }
-
 
 /* Style untuk form */
 form {
-  max-width: 600px;
+  width: 80%;
   margin: 0 auto;
   background-color: white;
   padding: 20px;
@@ -196,8 +212,8 @@ form label {
   color: #333;
 }
 
-form input[type="number"],
-form input[type="text"],
+input[type="number"],
+input[type="text"],
 .form-button {
   width: 100%;
   padding: 10px;
@@ -218,18 +234,35 @@ form button:hover {
   background-color: #555;
 }
 
-/* Style untuk tabel */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+#inputTable {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
 }
 
-table, th, td {
+#result {
+  width: 60%;
+  padding: 0;
+  margin: 5px;
+}
+
+/* Style untuk tabel */
+table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 20px;
+}
+
+table,
+th,
+td {
   border: 1px solid #ddd;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: center;
 }
@@ -245,4 +278,30 @@ tr:nth-child(even) {
 
 input[type="checkbox"] {
   margin-top: 10px;
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    height: auto; /* Ubah tinggi menjadi auto untuk fleksibilitas */
+  }
+
+  .button {
+    width: 100%; /* Mengubah lebar tombol menjadi 100% pada layar kecil */
+  }
+
+  h1 {
+    font-size: 4vh; /* Mengurangi ukuran font judul */
+  }
+
+  .judul {
+    font-size: 4rem; /* Mengurangi ukuran font judul */
+  }
+
+  .desc {
+    font-size: 1.5rem; /* Mengurangi ukuran font deskripsi */
+  }
+
+  table {
+    width: 90%; /* Mengubah lebar tabel menjadi 90% pada layar kecil */
+  }
 }
