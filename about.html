@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Style untuk section about */
+      .about-section {
+        text-align: center;
+        padding: 50px;
+        background: transparent;
+      }
+
+      .about-section h1 {
+        font-size: 50px;
+        color: #333;
+      }
+
+      .about-section p {
+        font-size: 20px;
+        color: #333;
+      }
+
+      /* Style untuk cards */
+      .cards {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 80px;
+        flex-wrap: wrap;
+        padding: 20px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 300px; /* Tentukan lebar yang seragam untuk semua card */
+        padding: 20px;
+        transition: transform 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 280px;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+      }
+
+      .card-image {
+        width: 180px; /* Tentukan ukuran tetap untuk lebar gambar */
+        height: 180px; /* Tentukan ukuran tetap untuk tinggi gambar */
+        border-radius: 50%;
+        object-fit: cover; /* Pastikan gambar tidak terdistorsi dan tetap dalam bentuk lingkaran */
+        margin-bottom: 20px;
+      }
+
+      .card h3 {
+        margin: 10px 0 5px;
+        font-size: 20px;
+      }
+
+      .card p {
+        font-size: 16px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topnav" id="myTopnav">
+      <p class="logo">Novice</p>
+      <div class="menu">
+        <a href="index.html">Home</a>
+        <div class="dropdown">
+          <button class="dropbtn">
+            Methods
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="saw.html">SAW</a>
+            <a href="wp.html">WP</a>
+            <a href="topsis.html">TOPSIS</a>
+            <a href="ahp.html">AHP</a>
+          </div>
+        </div>
+        <a href="about.html">About</a>
+        <a
+          href="javascript:void(0);"
+          style="font-size: 15px"
+          class="icon"
+          onclick="myFunction()"
+          >&#9776;
+        </a>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h1>About Us</h1>
+      <p>Meet our team members</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <img src="img/candra.png" alt="Person 1" class="card-image" />
+        <h3>Candra Wibawa</h3>
+        <p>140810220044</p>
+      </div>
+
+      <div class="card">
+        <img src="img/adzikkra.png" alt="Person 2" class="card-image" />
+        <h3>Muhammad Adzikra Dhiya A</h3>
+        <p>140810220046</p>
+      </div>
+
+      <div class="card">
+        <img src="img/ivan.png" alt="Person 3" class="card-image" />
+        <h3>Ivan Arsy Himawan</h3>
+        <p>140810220052</p>
+      </div>
+    </div>
+
+    <script>
+      function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+          x.className += " responsive";
+        } else {
+          x.className = "topnav";
+        }
+      }
+    </script>
+  </body>
+</html>
