@@ -26,7 +26,7 @@
           <a href="ahp.html">AHP</a>
         </div>
       </div>
-      <a href="#about">About</a>
+      <a href="about.html">About</a>
       <a href="javascript:void(0);" style="font-size: 15px" class="icon" onclick="myFunction()">&#9776;
       </a>
     </div>
@@ -36,11 +36,12 @@
     <h1>Perhitungan AHP</h1>
 
       <label for="criteria">Jumlah Kriteria:</label>
-      <input type="number" id="criteria" value="3" min="2" style="width: 50%;">
-      <button onclick="generateAHPTable()">Generate Matriks</button>
+      <input type="number" id="criteria" class="criteria" value="3" min="2">
+      <button onclick="generateAHPTable()" class="form-button-2">Generate Matriks</button>
 
     <div id="inputTable"></div>
-    <div id="result"></div>
+    <div class="box-container" id="result"></div>
+    </div>
   </main>
   <script src="ahp.js"></script>
 </body>

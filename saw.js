@@ -17,7 +17,8 @@ function generateTable() {
         }
         tableHTML += '</tr>';
     }
-    tableHTML += '</table><br><button onclick="calculateSAW()">Calculate SAW</button>';
+    tableHTML += '</table><br><button onclick="calculateSAW()" class="form-button-2">Calculate SAW</button>';
+    tableHTML += `<button type="button" onclick="resetTable()" class="form-button-2" style="background-color: red;">Reset</button>`;
     document.getElementById("inputTable").innerHTML = tableHTML;
 }
 
@@ -83,4 +84,12 @@ function calculateSAW() {
     });
     resultHTML += '</table>';
     document.getElementById("result").innerHTML = resultHTML;
+    document.getElementById("result").style.display = "flex";
+}
+
+function resetTable() {
+  // Mengosongkan elemen yang menampilkan input table dan result
+  document.getElementById("inputTable").innerHTML = "";
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("result").style.display = "none";
 }

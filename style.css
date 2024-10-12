@@ -197,7 +197,7 @@ h1 {
 
 /* Style untuk form */
 form {
-  width: 80%;
+  width: 20%;
   margin: 0 auto;
   background-color: white;
   padding: 20px;
@@ -244,8 +244,10 @@ form button:hover {
 
 #result {
   width: 60%;
-  padding: 0;
-  margin: 5px;
+  display: none;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Style untuk tabel */
@@ -304,4 +306,34 @@ input[type="checkbox"] {
   table {
     width: 90%; /* Mengubah lebar tabel menjadi 90% pada layar kecil */
   }
+}
+
+.criteria {
+  width: 20%;
+}
+
+.form-button-2 {
+    width: fit-content;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.form-button-2:hover {
+    background-color: #555;
+}
+
+.box-container{
+  width: 20%;
+  margin: 20px;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
