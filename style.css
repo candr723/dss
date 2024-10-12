@@ -19,7 +19,7 @@ body {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 1.25rem; /* Gunakan rem untuk responsivitas */
+  font-size: 1.25rem; 
 }
 
 .logo {
@@ -28,7 +28,7 @@ body {
   color: #f2f2f2;
   text-align: center;
   padding: 7px 8px;
-  font-size: 1.875rem; /* Gunakan rem untuk responsivitas */
+  font-size: 1.875rem; 
   margin: 0;
   padding-left: 25px;
   font-weight: bolder;
@@ -48,7 +48,7 @@ body {
 }
 
 .dropdown .dropbtn {
-  font-size: 1.25rem; /* Gunakan rem untuk responsivitas */
+  font-size: 1.25rem; 
   border: none;
   outline: none;
   color: white;
@@ -159,7 +159,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px; /* Sesuaikan jarak pada button */
+  gap: 20px; 
 }
 
 .button {
@@ -171,7 +171,7 @@ h1 {
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.5625rem; /* Gunakan rem untuk responsivitas */
+  font-size: 1.5625rem; 
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -187,15 +187,14 @@ h1 {
 
 .judul {
   margin: 20px;
-  font-size: 3rem; /* Gunakan rem untuk responsivitas */
+  font-size: 3rem;
 }
 
 .desc {
   margin: 20px;
-  font-size: 1.875rem; /* Gunakan rem untuk responsivitas */
+  font-size: 1.875rem;
 }
 
-/* Style untuk form */
 form {
   width: 20%;
   margin: 0 auto;
@@ -284,31 +283,31 @@ input[type="checkbox"] {
 
 @media screen and (max-width: 600px) {
   .container {
-    height: auto; /* Ubah tinggi menjadi auto untuk fleksibilitas */
+    height: auto; 
   }
 
   .button {
-    width: 100%; /* Mengubah lebar tombol menjadi 100% pada layar kecil */
+    width: 100%;
   }
 
   h1 {
-    font-size: 4vh; /* Mengurangi ukuran font judul */
+    font-size: 4vh; 
   }
 
   .judul {
-    font-size: 4rem; /* Mengurangi ukuran font judul */
+    font-size: 4rem; 
   }
 
   .desc {
-    font-size: 1.5rem; /* Mengurangi ukuran font deskripsi */
+    font-size: 1.5rem; 
   }
 
   table {
-    width: 90%; /* Mengubah lebar tabel menjadi 90% pada layar kecil */
+    width: 90%; 
   }
 }
 
-.criteria {
+#criteria.criteria {
   width: 20%;
 }
 
